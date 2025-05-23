@@ -30,6 +30,39 @@ redis pub/sub을 통해 멀티서버 환경 고려
     - 각 서버를 subscribe하고 있는 클라이언트들은 특정 room에 전파된 message를 수신
 
 
+erd 설계
+
+![erd](https://github.com/user-attachments/assets/476d2f47-d202-48b2-a159-ef55fbd3a52f)
+
+- api 목록(ChatController)
+    - 메시지저장(saveMessage 메서드구현)
+    - 그룹채팅관련
+        - 그룹채팅방 개설(/chat/room/group/create)
+        - 그룹채팅 목록조회(/chat/room/group/list)
+        - 그룹채팅에 참여자추가(/chat/room/group/{roomId}/join)
+    - 1:1채팅관련
+        - 개인채팅방 개설(/chat/room/private/create)
+    - 공통처리
+        - 이전메시지 내역조회(/chat/history/{roomId})
+        - 채팅방메시지 읽음처리(/chat/room/{roomId}/read)
+        - 내 채팅방 목록조회(/chat/my/rooms)
+        - 채팅방 나가기(/chat/room/group/{roomId}/leave)
+
+스프링에서 stomp 주요요소 
+![asdfsdafasdf](https://github.com/user-attachments/assets/6757f14c-dc52-49cc-a162-ee37b8000ebc)
+
+- 메시지 교환 절차
+    - 클라이언트에서 지정된 /app(publish)/{roomId} 경로로 메시지를 발행하면 broker에 의해서 /topic/{roomId} 이라는 경로의 채널에 메시지가 전달
+    - 동시에 /topic/{roomId}를 구독하고 있는 클라이언트에게 실시간으로 메시지가 전달
+- SimpAnnotationMethodMessageHandler
+    - 우리 코드상의 StompController에서 @MessageMapping과 @SendTo와 같은 애노테이션이 선언된 메서드를 처리하는 핸들러
+    - 어노테이션을 통해 지정된 메서드로 메시지를 라우팅하는 역할
+- SimpleBroker(브로커)
+    - Spring에서 제공하는 메모리 기반 브로커로서, 경로에 따라 메시지를 분배하고 클라이언트에게 메시지를 전달
+    - SimpleBroker (내장 브로커-enableSimpleBroker), StompBrokerRelay (외부 메시지 브로커-enableStompBrokerRelay) 사용
+    - 우리 코드 상에 StompWebSocketConfig에서 configureMessageBroker를 통해 설정
+
+
 
 
 회원가입, 로그인 (jwt토큰 기반)
