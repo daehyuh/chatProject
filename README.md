@@ -49,6 +49,7 @@ erd 설계
         - 채팅방 나가기(/chat/room/group/{roomId}/leave)
 
 스프링에서 stomp 주요요소 
+
 ![asdfsdafasdf](https://github.com/user-attachments/assets/6757f14c-dc52-49cc-a162-ee37b8000ebc)
 
 - 메시지 교환 절차
